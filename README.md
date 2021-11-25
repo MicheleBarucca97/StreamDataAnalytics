@@ -39,7 +39,9 @@ How to run the demo
 =========
 The first step to run the demo is to enable some permission, since the default permissions on ```/var/run/docker.sock``` is generally owned by user root and group docker, with mode 0660 (read/write permissions for owner and group, no permissions for others). So in order to use docker, first of all you have to run a small bash script tath you can find in the repos under the name ```script```.
 
-At this point all you have to do is to run the docker-compose file with the flag ```-d```, in this way it runs in background and you can continue to use the same terminal window, the complete command is:   ```docker-compose up -d```.
+The docker-compose file
+---------
+You have to set up the Kafka environment, this is easely done by running the docker-compose file with the flag ```-d```, in this way it runs in background and you can continue to use the same terminal window, the complete command is:   ```docker-compose up -d```.
 
 You can define a ksqlDB application by creating a stack of containers. A stack is a group of containers that run interrelated services.The minimal ksqlDB stack has containers for Apache Kafka, ZooKeeper ([What is Zookeeper](https://zookeeper.apache.org/)) and ksqlDB Server. More sophisticated ksqlDB stacks can have Schema Registry, Connect, and other third-party services, like Elasticsearch.
 Stacks that have Schema Registry can use Avro- and Protobuf-encoded events in ksqlDB applications. Without Schema Registry, your ksqlDB applications can use only JSON or delimited formats (which is our case).
@@ -103,3 +105,61 @@ services:
     tty: true
 ```
 
+To see that everything went smoothly you can type on the terminal ```docker ps -a``` and see that all the images are running.
+
+Start the ksqlDB CLI
+---------
+When all of the services in the stack are Up, run the following command to start the ksqlDB CLI and connect to a ksqlDB Server.
+Run the following command to start the ksqlDB CLI in the running ksqldb-cli container:
+
+```docker exec ksqldb-cli ksql http://primary-ksqldb-server:8088```
+
+In the Git-repos you can find a bash script containing this command, so in the terminal you can simply run ```./launch-ksql```:
+
+```
+                  ===========================================
+                  =       _              _ ____  ____       =
+                  =      | | _____  __ _| |  _ \| __ )      =
+                  =      | |/ / __|/ _` | | | | |  _ \      =
+                  =      |   <\__ \ (_| | | |_| | |_) |     =
+                  =      |_|\_\___/\__, |_|____/|____/      =
+                  =                   |_|                   =
+                  =        The Database purpose-built       =
+                  =        for stream processing apps       =
+                  ===========================================
+
+Copyright 2017-2020 Confluent Inc.
+
+CLI v0.22.0, Server v0.22.0 located at http://primary-ksql-server:8088
+
+Having trouble? Type 'help' (case-insensitive) for a rundown of how things work!
+
+ksql>
+```
+
+With the ksqlDB CLI running, you can issue SQL statements and queries on the ksql> command line.
+Before we see how to send data to ksqlDB, we need to execute some commands ksqlDB CLI. The first command we have to run is:
+```SET 'auto.offset.reset' = 'earliest';```
+This command allows to return the queries always from the beginning of the data streams, this is used for debugging purposes.
+
+Next, we have to create the stream in which we will insert the data
+```
+CREATE STREAM Wikipedia_STREAM (domain VARCHAR,
+  namespaceType VARCHAR,
+  title VARCHAR,
+  timestamp VARCHAR,
+  userName VARCHAR,
+  userType VARCHAR,
+  oldLength INTEGER,
+  newLength INTEGER)
+  WITH (
+  kafka_topic='Wikipedia_topic',
+  value_format='json',
+  partitions=1);
+```
+To see if everything worked well, we can do two things:
+1. ```show topics;``` -> to see if the topic has been created, in our case is 'Wikipedia_topic'
+2. INSERT INTO Wikipedia_STREAM (domain, namespaceType, title, timestamp, userName, userType, oldLength, newLength) VALUES ('www.wikidata.org', 'main namespace', 'Q109715322', '2021-11-24T16:59:10Z', 'SuccuBot', 'bot', 1486, 1850); -> in this way we only see that data are inserted properly
+
+Python application
+---------
