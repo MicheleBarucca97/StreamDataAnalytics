@@ -25,9 +25,81 @@ Some of the key features that make Apache Kafka a great product:
 
 Case study 
 =========
-The use case is a Kafka event streaming application for real-time edits to real Wikipedia pages. Wikimedia Foundation has IRC channels that publish edits happening to real wiki pages in real time. I decide to implement a symple code in pyhton that manege to retrive information from Wikipedia and send the message to a Kafka cluster.
+The use case is a Kafka event streaming application for real-time edits from real Wikipedia pages. Wikimedia Foundation has IRC channels that publish edits happening to real wiki pages in real time. To bring the edits from Wikipedia to the Kafka cluster I decide to use Python, in which there are multiple libraries available for usage, in this spceific case I refere to the library **ksql-python**: a python wrapper for the KSQL REST API. Easily interact with the KSQL REST API using this library. The general set-up to use suche library is the following:
 
-This demo uses ksqlDB and a Kafka Streams application for data processing. This is a Docker environment and has all services running on one host.
+```python
+from ksql import KSQLAPI
+client = KSQLAPI('http://ksql-server:8088')
+```
+
+To have more information about the following library I redirect you at [the following link](https://libraries.io/pypi/ksql).
+This demo uses ksqlDB and a Kafka Streams application for data processing. This is a Docker environment and has all services running on one host. Also notice that the operative system in which the application was built is Ubuntu 20.04. 
 
 How to run the demo  
 =========
+The first step to run the demo is to enable some permission, since the default permissions on ```/var/run/docker.sock``` is generally owned by user root and group docker, with mode 0660 (read/write permissions for owner and group, no permissions for others). So in order to use docker, first of all you have to run a small bash script tath you can find in the repos under the name ```script```.
+
+At this point all you have to do is to run the docker-compose file with the flag ```-d```, in this way it runs in background and you can continue to use the same terminal window, the complete command is:   ```docker-compose up -d```.
+
+You can define a ksqlDB application by creating a stack of containers. A stack is a group of containers that run interrelated services.The minimal ksqlDB stack has containers for Apache Kafka, ZooKeeper ([What is Zookeeper](https://zookeeper.apache.org/)) and ksqlDB Server. More sophisticated ksqlDB stacks can have Schema Registry, Connect, and other third-party services, like Elasticsearch.
+Stacks that have Schema Registry can use Avro- and Protobuf-encoded events in ksqlDB applications. Without Schema Registry, your ksqlDB applications can use only JSON or delimited formats (which is our case).
+
+The usual configuration is the following:
+
+```docker-compose
+---
+version: '2'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:6.2.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:6.2.0
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:0.21.0
+    hostname: ksqldb-server
+    container_name: ksqldb-server
+    depends_on:
+      - broker
+    ports:
+      - "8088:8088"
+    environment:
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_BOOTSTRAP_SERVERS: broker:9092
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli:0.21.0
+    container_name: ksqldb-cli
+    depends_on:
+      - broker
+      - ksqldb-server
+    entrypoint: /bin/sh
+    tty: true
+```
+
