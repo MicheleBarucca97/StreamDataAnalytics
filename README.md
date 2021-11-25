@@ -161,5 +161,41 @@ To see if everything worked well, we can do two things:
 1. ```show topics;``` -> to see if the topic has been created, in our case it is 'Wikipedia_topic'
 2. ```INSERT INTO Wikipedia_STREAM (domain, namespaceType, title, timestamp, userName, userType, oldLength, newLength) VALUES ('www.wikidata.org', 'main namespace', 'Q109715322', '2021-11-24T16:59:10Z', 'SuccuBot', 'bot', 1486, 1850);``` -> in this way we see that data are inserted properly
 
-Python application
+Data generation through a Python app
+---------
+The file ```wikipedia_data_streaming.py``` contains the lines of code necessary to parse the data coming from Wikipedia thanks to the URL ```'https://stream.wikimedia.org/v2/stream/recentchange'``` and put those into a JSON file built ad hoc, which will be sent directly to the Kafka cluster.
+Some precautions have been made in the analysis of data from Wikipedia: first of all it was created a dictionary for the various known namespaces, the 32 namespaces in the English Wikipedia are numbered for programming purposes. So we construct a function that take into account those namespace
+```
+def init_namespaces():
+    namespace_dict = {-2: 'Media', 
+                      -1: 'Special', 
+                      0: 'main namespace', 
+                      1: 'Talk', 
+                      2: 'User', 3: 'User Talk',
+                      4: 'Wikipedia', 5: 'Wikipedia Talk', 
+                      6: 'File', 7: 'File Talk',
+                      8: 'MediaWiki', 9: 'MediaWiki Talk', 
+                      10: 'Template', 11: 'Template Talk', 
+                      12: 'Help', 13: 'Help Talk', 
+                      14: 'Category', 15: 'Category Talk', 
+                      100: 'Portal', 101: 'Portal Talk',
+                      108: 'Book', 109: 'Book Talk', 
+                      118: 'Draft', 119: 'Draft Talk', 
+                      446: 'Education Program', 447: 'Education Program Talk', 
+                      710: 'TimedText', 711: 'TimedText Talk', 
+                      828: 'Module', 829: 'Module Talk', 
+                      2300: 'Gadget', 2301: 'Gadget Talk', 
+                      2302: 'Gadget definition', 2303: 'Gadget definition Talk'}
+
+    return namespace_dict
+```
+In this way for each edit that comes from Wikipedia the number associeted with the namespace is traslated into a string and if the number is not associated with any string then it is inserted as an 'unknown' namespace.
+
+The second notice regard the fact that we neglet directly in the Python program the data coming from wikipedia that have ```type``` different from ```'edit'```.
+
+Now before proceeding with the next step you have to open a different terminal and launch the python script, you can do it simply through the command:
+```python3 wikipedia_data_streaming.py```
+On the terminal you will see the JSON messages that will be published in Kafka.
+
+Play with ksqlCLI
 ---------
