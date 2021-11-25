@@ -158,8 +158,8 @@ CREATE STREAM Wikipedia_STREAM (domain VARCHAR,
   partitions=1);
 ```
 To see if everything worked well, we can do two things:
-1. ```show topics;``` -> to see if the topic has been created, in our case is 'Wikipedia_topic'
-2. ```INSERT INTO Wikipedia_STREAM (domain, namespaceType, title, timestamp, userName, userType, oldLength, newLength) VALUES ('www.wikidata.org', 'main namespace', 'Q109715322', '2021-11-24T16:59:10Z', 'SuccuBot', 'bot', 1486, 1850);``` -> in this way we only see that data are inserted properly
+1. ```show topics;``` -> to see if the topic has been created, in our case it is 'Wikipedia_topic'
+2. ```INSERT INTO Wikipedia_STREAM (domain, namespaceType, title, timestamp, userName, userType, oldLength, newLength) VALUES ('www.wikidata.org', 'main namespace', 'Q109715322', '2021-11-24T16:59:10Z', 'SuccuBot', 'bot', 1486, 1850);``` -> in this way we see that data are inserted properly
 
 Python application
 ---------
