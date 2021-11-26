@@ -278,3 +278,11 @@ Output:
 ```
 
 ```
+Keep in mind
+---------
+It's customary to shut down
+
+```
+docker ps -q -a | xargs docker stop
+
+```
