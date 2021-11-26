@@ -199,9 +199,9 @@ On the terminal you will see the JSON messages that will be published in Kafka.
 
 Play with ksqlCLI
 ---------
-```
-Q1 - select the edits with a difference in length higher then 100
 
+**Q1 - select the edits with a difference in length higher then 100**
+```
 SELECT domain,title,(newLength-oldLength) AS LENGTH_DIFF  FROM  Wikipedia_STREAM WHERE (newLength-oldLength)>100 EMIT CHANGES;
 ```
 The output should be something like this: 
@@ -217,9 +217,8 @@ The output should be something like this:
 |commons.wikimedia.org                                |File:Aq facility rental.jpg                          |518                                                  |
 ```
 
+**Q2 - the avarage of the new and old length made by different type of users**
 ```
-Q2 - the avarage of the new and old length made by different type of users
-
 SELECT domain, userType, AVG(oldLength) AS AVG_OLD_LEN, AVG(newLength) AS AVG_NEW_LEN
 FROM Wikipedia_STREAM 
 GROUP BY userType, domain EMIT CHANGES;
@@ -238,9 +237,8 @@ Output:
 
 ```
 
+**Q3 - logical tumbling window**
 ```
-Q3 - ogical tumbling window
-
 SELECT domain, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
   TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
   TIMESTAMPTOSTRING(WINDOWEND, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_end
@@ -267,8 +265,8 @@ Output:
 
 ```
 
+**Q4-logical hopping window**
 ```
-Q4-logical hopping window
 SELECT namespaceType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
   TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
   TIMESTAMPTOSTRING(WINDOWEND, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_end
