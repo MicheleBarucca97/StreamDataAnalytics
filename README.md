@@ -217,11 +217,66 @@ The output should be something like this:
 |commons.wikimedia.org                                |File:Aq facility rental.jpg                          |518                                                  |
 ```
 
+```
+Q2 - the avarage of the new and old length made by different type of users
 
+SELECT domain, userType, AVG(oldLength) AS AVG_OLD_LEN, AVG(newLength) AS AVG_NEW_LEN
+FROM Wikipedia_STREAM 
+GROUP BY userType, domain EMIT CHANGES;
+```
+Output:
+```
++---------------------------------------+---------------------------------------+---------------------------------------+---------------------------------------+
+|DOMAIN                                 |USERTYPE                               |AVG_OLD_LEN                            |AVG_NEW_LEN                            |
++---------------------------------------+---------------------------------------+---------------------------------------+---------------------------------------+
+|en.wikipedia.org                       |human                                  |7232.0                                 |7234.0                                 |
+|commons.wikimedia.org                  |bot                                    |5009.0                                 |5059.0                                 |
+|de.wikipedia.org                       |human                                  |94467.0                                |94758.0                                |
+|sv.wikipedia.org                       |human                                  |292.0                                  |2101.0                                 |
+|de.wikipedia.org                       |human                                  |78651.5                                |78797.0                                |
+|www.wikidata.org                       |bot                                    |50349.0                                |50349.0                                |
 
+```
 
+```
+Q3 - ogical tumbling window
 
+SELECT domain, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
+  TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
+  TIMESTAMPTOSTRING(WINDOWEND, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_end
+FROM Wikipedia_STREAM 
+     WINDOW TUMBLING (SIZE 4 SECONDS)
+GROUP BY domain EMIT CHANGES;
+```
+First of all, let's inspect the start and the end of the windows or even better using TIMESTAMPTOSTRING to have a human readable timestamp
+SO the tubling windows behaves as in EPL on the historical data, but they also give real-time updates whenever a new data arrives.
+Output:
+```
++---------------------------------------+---------------------------------------+---------------------------------------+---------------------------------------+
+|DOMAIN                                 |AVG_DIFF_LEN                           |WINDOW_START                           |WINDOW_END                             |
++---------------------------------------+---------------------------------------+---------------------------------------+---------------------------------------+
+|ar.wikipedia.org                       |-6.0                                   |2021-11-26 16:40:16+0200               |2021-11-26 16:40:20+0200               |
+|es.wikipedia.org                       |12.0                                   |2021-11-26 16:40:16+0200               |2021-11-26 16:40:20+0200               |
+|www.wikidata.org                       |84.0                                   |2021-11-26 16:40:20+0200               |2021-11-26 16:40:24+0200               |
+|en.wikipedia.org                       |1.0                                    |2021-11-26 16:40:20+0200               |2021-11-26 16:40:24+0200               |
+|zh.wikipedia.org                       |434.0                                  |2021-11-26 16:40:24+0200               |2021-11-26 16:40:28+0200               |
+|en.wikipedia.org                       |564.0                                  |2021-11-26 16:40:28+0200               |2021-11-26 16:40:32+0200               |
+|id.wikipedia.org                       |59.0                                   |2021-11-26 16:40:28+0200               |2021-11-26 16:40:32+0200               |
+|commons.wikimedia.org                  |421.0                                  |2021-11-26 16:40:32+0200               |2021-11-26 16:40:36+0200               |
+|www.wikidata.org                       |81.0                                   |2021-11-26 16:40:32+0200               |2021-11-26 16:40:36+0200               |
 
+```
 
+```
+Q4-logical hopping window
+SELECT namespaceType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
+  TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
+  TIMESTAMPTOSTRING(WINDOWEND, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_end
+FROM Wikipedia_STREAM 
+      WINDOW HOPPING (SIZE 4 SECONDS, ADVANCE BY 2 SECONDS)
+GROUP BY namespaceType EMIT CHANGES;
+```
+Output:
+```
 
-
+```
