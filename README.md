@@ -199,3 +199,29 @@ On the terminal you will see the JSON messages that will be published in Kafka.
 
 Play with ksqlCLI
 ---------
+```
+Q1 - select the edits with a difference in length higher then 100
+
+SELECT domain,title,(newLength-oldLength) AS LENGTH_DIFF  FROM  Wikipedia_STREAM WHERE (newLength-oldLength)>100 EMIT CHANGES;
+```
+The output should be something like this: 
+
++-----------------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+|DOMAIN                                               |TITLE                                                |LENGTH_DIFF                                          |
++-----------------------------------------------------+-----------------------------------------------------+-----------------------------------------------------+
+|www.wikidata.org                                     |Q33721364                                            |175                                                  |
+|commons.wikimedia.org                                |File:Tskordza, Amagleba church (19).jpg              |421                                                  |
+|www.wikidata.org                                     |Q109744204                                           |329                                                  |
+|www.wikidata.org                                     |Q17194027                                            |1093                                                 |
+|www.wikidata.org                                     |Q109746382                                           |330                                                  |
+|commons.wikimedia.org                                |File:Aq facility rental.jpg                          |518                                                  |
+
+
+
+
+
+
+
+
+
+
