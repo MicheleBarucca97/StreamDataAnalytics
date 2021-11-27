@@ -247,8 +247,8 @@ SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
 FROM Wikipedia_STREAM WINDOW TUMBLING (SIZE 4 SECONDS)
 GROUP BY userType EMIT CHANGES;
 ```
-First of all, let's inspect the start and the end of the windows or even better using TIMESTAMPTOSTRING to have a human readable timestamp
-SO the tubling windows behaves as in EPL on the historical data, but they also give real-time updates whenever a new data arrives.
+Some explanations about the query written: first, the window is generated through the command WINDOW TUMBLING. Second, to inspect the start and the end of the windows and have these written in a human readable timestep it is used TIMESTAMPTOSTRING.
+
 Output:
 ```
 +---------------------------------+---------------------------------+---------------------------------+---------------------------------+
@@ -268,9 +268,10 @@ Output:
 |bot                              |20.0                             |2021-11-27 17:34:40+0200         |2021-11-27 17:34:44+0200         |
 |human                            |68.0                             |2021-11-27 17:34:40+0200         |2021-11-27 17:34:44+0200         |
 ```
+So the tubling windows acts on the historical data, but they also give real-time updates whenever a new data arrives.
 
 **Q4-logical hopping window**
-The average difference between new and old length of the last 8 seconds every 8 seconds group by the type of user
+The average difference between new and old length of the last 8 seconds every 6 seconds group by the type of user
 ```
 SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
   TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
