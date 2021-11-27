@@ -306,7 +306,7 @@ At this point you can play in variuous ways with ksql CLI, querying the stream o
 
 Keep in mind
 ---------
-It's customary to shut down the docker-containers after you have used those. To do this type the two command
+It's customary to shut down the docker-containers after you have used those. In order to do this, you have to type in terminal the following two command:
 
 ```
 docker ps -q -a | xargs docker stop
