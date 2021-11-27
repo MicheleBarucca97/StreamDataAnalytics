@@ -1,7 +1,7 @@
 # StreamDataAnalytics
 Introduction
 ============
-Project focused on the parsing of data coming from wikipedia using Kafka, in particular ksqldb
+The project aims to creating a streaming ETL pipeline, that ingests events from Wikipedia, transforms them through a script in python and loads them into destination storage systems, in this case Kafka.
 
 What is Kafka?
 ------------
@@ -32,12 +32,12 @@ from ksql import KSQLAPI
 client = KSQLAPI('http://ksql-server:8088')
 ```
 
-To have more information about the following library I redirect you at [the following link](https://libraries.io/pypi/ksql).
+To have more information about the following library I redirect you to [the following link](https://libraries.io/pypi/ksql).
 This demo uses ksqlDB and a Kafka Streams application for data processing. This is a Docker environment and has all services running on one host. Also notice that the operative system in which the application was built is Ubuntu 20.04. 
 
 How to run the demo  
 =========
-The first step to run the demo is to enable some permission, since the default permissions on ```/var/run/docker.sock``` is generally owned by user root and group docker, with mode 0660 (read/write permissions for owner and group, no permissions for others). So in order to use docker, first of all you have to run a small bash script tath you can find in the repos under the name ```script```.
+The first step to run the demo is to enable some permission, since the default permissions on ```/var/run/docker.sock``` is generally owned by user root and group docker, with mode 0660 (read/write permissions for owner and group, no permissions for others). So in order to use docker, first of all you have to run a small bash script that you can find in the git folder under the name ```script```.
 
 The docker-compose file
 ---------
@@ -105,7 +105,7 @@ services:
     tty: true
 ```
 
-To see that everything went smoothly you can type on the terminal ```docker ps -a``` and see that all the images are running.
+To see that everything went smoothly you can type on the terminal ```docker ps -a``` and see that all the containers are running.
 
 Start the ksqlDB CLI
 ---------
@@ -114,7 +114,7 @@ Run the following command to start the ksqlDB CLI in the running ksqldb-cli cont
 
 ```docker exec ksqldb-cli ksql http://primary-ksqldb-server:8088```
 
-In the Git-repos you can find a bash script containing this command, so in the terminal you can simply run ```./launch-ksql```:
+In the git-folder you can find a bash script containing this command, so in the terminal you can simply run ```./launch-ksql.sh```:
 
 ```
                   ===========================================
@@ -138,11 +138,12 @@ ksql>
 ```
 
 With the ksqlDB CLI running, you can issue SQL statements and queries on the ksql> command line.
-Before we see how to send data to ksqlDB, we need to execute some commands ksqlDB CLI. The first command we have to run is:
-```SET 'auto.offset.reset' = 'earliest';```
-This command allows to return the queries always from the beginning of the data streams, this is used for debugging purposes.
 
-Next, we have to create the stream in which we will insert the data
+In the ksqlDB CLI it is common practise, for debugging purposes, to type in this command:
+```SET 'auto.offset.reset' = 'earliest';```
+This command allows to return the queries always from the beginning of the data streams.
+
+Next, we have to create the stream in which we will insert the data:
 ```
 CREATE STREAM Wikipedia_STREAM (domain VARCHAR,
   namespaceType VARCHAR,
@@ -164,7 +165,7 @@ To see if everything worked well, we can do two things:
 Data generation through a Python app
 ---------
 The file ```wikipedia_data_streaming.py``` contains the lines of code necessary to parse the data coming from Wikipedia thanks to the URL ```'https://stream.wikimedia.org/v2/stream/recentchange'``` and put those into a JSON file built ad hoc, which will be sent directly to the Kafka cluster.
-Some precautions have been made in the analysis of data from Wikipedia: first of all it was created a dictionary for the various known namespaces, the 32 namespaces in the English Wikipedia are numbered for programming purposes. So we construct a function that take into account those namespace
+Some precautions have been made in the analysis of data coming from Wikipedia: first of all it was created a dictionary for the various known namespaces, the 32 namespaces in the English Wikipedia are numbered for programming purposes. So we construct a function that take into account those namespace:
 ```
 def init_namespaces():
     namespace_dict = {-2: 'Media', 
@@ -191,16 +192,16 @@ def init_namespaces():
 ```
 In this way for each edit that comes from Wikipedia the number associeted with the namespace is traslated into a string and if the number is not associated with any string then it is inserted as an 'unknown' namespace.
 
-The second notice regard the fact that we neglet directly in the Python program the data coming from wikipedia that have ```type``` different from ```'edit'```.
+A second notice concern the fact that I decide to neglet directly the data coming from wikipedia that have ```type``` different from ```'edit'```.
 
-Now before proceeding with the next step you have to open a different terminal and launch the python script, you can do it simply through the command:
+Now before proceeding with the next step you have to open a different terminal and launch a python script, you can do it simply through the command:
 ```python3 wikipedia_data_streaming.py```
 On the terminal you will see the JSON messages that will be published in Kafka.
 
 Play with ksqlCLI
 ---------
 
-**Q1 - select the edits with a difference in length higher then 100**
+**Q1 - select the edits with a difference between the new and old length higher then 100**
 ```
 SELECT domain,title,(newLength-oldLength) AS LENGTH_DIFF  FROM  Wikipedia_STREAM WHERE (newLength-oldLength)>100 EMIT CHANGES;
 ```
@@ -217,7 +218,7 @@ The output should be something like this:
 |commons.wikimedia.org                                |File:Aq facility rental.jpg                          |518                                                  |
 ```
 
-**Q2 - the avarage of the new and old length made by different type of users**
+**Q2 - the avarage of the new and old length group by the type of user and the domain of the edit**
 ```
 SELECT domain, userType, AVG(oldLength) AS AVG_OLD_LEN, AVG(newLength) AS AVG_NEW_LEN
 FROM Wikipedia_STREAM 
@@ -280,9 +281,11 @@ Output:
 ```
 Keep in mind
 ---------
-It's customary to shut down
+It's customary to shut down the docker-containers after you have used those. To do this type the two command
 
 ```
 docker ps -q -a | xargs docker stop
+
+docker ps -q -a | xargs docker rm
 
 ```
