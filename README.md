@@ -239,6 +239,7 @@ Output:
 ```
 
 **Q3 - logical tumbling window**
+
 The average difference between new and old length of the last 4 seconds every 4 seconds
 ```
 SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
@@ -271,6 +272,7 @@ Output:
 So the tubling windows acts on the historical data, but they also give real-time updates whenever a new data arrives.
 
 **Q4-logical hopping window**
+
 The average difference between new and old length of the last 8 seconds every 6 seconds group by the type of user
 ```
 SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
