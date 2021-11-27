@@ -239,6 +239,7 @@ Output:
 ```
 
 **Q3 - logical tumbling window**
+The average difference between new and old length of the last 4 seconds every 4 seconds
 ```
 SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
   TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
@@ -269,6 +270,7 @@ Output:
 ```
 
 **Q4-logical hopping window**
+The average difference between new and old length of the last 8 seconds every 8 seconds group by the type of user
 ```
 SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
   TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
@@ -297,6 +299,9 @@ Output:
 |bot                              |2047.0                           |2021-11-27 17:34:56+0200         |2021-11-27 17:35:04+0200         |
 |human                            |70.0                             |2021-11-27 17:34:56+0200         |2021-11-27 17:35:04+0200         |
 ```
+
+At this point you can play in variuous ways with ksql CLI, querying the stream of edits in all the manner you like more, have fun then.
+
 Keep in mind
 ---------
 It's customary to shut down the docker-containers after you have used those. To do this type the two command
