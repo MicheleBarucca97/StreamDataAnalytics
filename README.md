@@ -285,7 +285,7 @@ It's customary to shut down the docker-containers after you have used those. To 
 
 ```
 docker ps -q -a | xargs docker stop
-
+```
+```
 docker ps -q -a | xargs docker rm
-
 ```
