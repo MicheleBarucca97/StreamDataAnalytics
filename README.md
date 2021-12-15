@@ -45,10 +45,11 @@ So in order to use docker, first of all you have to run a small bash script that
 
 The docker-compose file
 ---------
-You have to set up the Kafka environment, this is easely done by running the docker-compose file with the flag ```-d```, in this way it runs in background and you can continue to use the same terminal window, the complete command is:   ```docker-compose up -d```.
+You have to set up the Kafka environment, this can be easely done by running the **docker-compose file** with the flag ```-d```, in this way it runs in background and you can continue to use the same terminal window, the complete command is:   ```docker-compose up -d```.
 
 You can define a ksqlDB application by creating a stack of containers. A stack is a group of containers that run interrelated services.The minimal ksqlDB stack has containers for Apache Kafka, ZooKeeper ([What is Zookeeper](https://zookeeper.apache.org/)) and ksqlDB Server. More sophisticated ksqlDB stacks can have Schema Registry, Connect, and other third-party services, like Elasticsearch.
-Stacks that have Schema Registry can use Avro- and Protobuf-encoded events in ksqlDB applications. Without Schema Registry, your ksqlDB applications can use only JSON or delimited formats (which is our case).
+
+**Note** : stacks that have Schema Registry can use Avro- and Protobuf-encoded events in ksqlDB applications. Without Schema Registry, your ksqlDB applications can use only JSON or delimited formats (which is our case).
 
 The usual configuration is the following:
 
