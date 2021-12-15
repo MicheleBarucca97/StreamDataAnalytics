@@ -197,9 +197,9 @@ def init_namespaces():
 ```
 In this way for each edit that comes from Wikipedia the number associeted with the namespace is traslated into a string and if the number is not associated with any string then it is inserted as an 'unknown' namespace.
 
-A second notice concern the fact that I decide to neglet directly the data coming from wikipedia that have ```type``` different from ```'edit'```.
+A second notice concern the fact that I decide to neglet directly the data coming from wikipedia that have ```type``` different from ```'edit'```, since the gol of the demo is to parse the changes made on Wikipedia pages.
 
-Now before proceeding with the next step you have to open a different terminal and launch a python script, you can do it simply through the command:
+Before proceeding with the next step you have to open a different terminal and launch the python script, you can do it simply through the command:
 ```python3 wikipedia_data_streaming.py```
 On the terminal you will see the JSON messages that will be published in Kafka.
 
