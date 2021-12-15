@@ -17,7 +17,7 @@ A Kafka node is called a **broker**. Brokers are responsible for acquiring messa
 
 Some of the key features that make Apache Kafka a great product:
 
-+ Multiple producers can publish messages at the same time to the same topics.
++ Multiple producers can publish messages at the same time to the same topic.
 + Multiple consumers can read data independently from others or in a group of consumers sharing a stream and ensuring that each message will be read only once across a group.
 + Retention, data published to cluster can persist in disk according to given rules.
 + Scalability, Kafka is designed to be fully scalable as it is a distributed system that runs on multiple clusters of brokers across different geographical regions, supporting multiple publishers and consumers.
