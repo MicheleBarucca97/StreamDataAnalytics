@@ -34,6 +34,7 @@ client = KSQLAPI('http://ksql-server:8088')
 
 To have more information about the ksql-python library I redirect you to [the following link](https://libraries.io/pypi/ksql).
 Then, the demo uses ksqlDB and ksqlDB CLI (Command-line Interface) to develop the SQL queries and statements for your real-time streaming applications. Basically, the ksqlDB CLI connects to a running ksqlDB Server instance to enable inspecting Kafka topics and creating ksqlDB streams and tables. 
+
 The demo is developed in a Docker environment and has all services running on one host. Also notice that the operative system in which the application was built is Ubuntu 20.04. 
 
 How to run the demo  
