@@ -39,7 +39,9 @@ The demo is developed in a Docker environment and has all services running on on
 
 How to run the demo  
 =========
-The first step to run the demo is to enable some permission, since the default permissions on ```/var/run/docker.sock``` is generally owned by user root and group docker, with mode 0660 (read/write permissions for owner and group, no permissions for others). So in order to use docker, first of all you have to run a small bash script that you can find in the git folder under the name ```script```.
+The first step to run the demo is to enable some permission, since the default permissions on ```/var/run/docker.sock``` is generally owned by user root and group docker, with mode 0660 (read/write permissions for owner and group, no permissions for others). 
+
+So in order to use docker, first of all you have to run a small bash script that you can find in the git folder under the name ```script```.
 
 The docker-compose file
 ---------
