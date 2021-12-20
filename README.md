@@ -25,7 +25,7 @@ Some of the key features that make Apache Kafka a great product:
 
 Case study 
 =========
-The use case is a Kafka event streaming application for real-time edits from real Wikipedia pages. Wikimedia Foundation has IRC channels that publish edits happening to real wiki pages in real time. To bring the edits from Wikipedia to the Kafka cluster I decide to use Python, in which there are multiple libraries available for usage, in this spceific case I refere to the library **ksql-python**: a python wrapper for the KSQL REST API. The general set-up to use suche library is the following:
+The use case is a Kafka event streaming application for real-time edits from real Wikipedia pages. Wikimedia Foundation has IRC channels that publish edits happening to real wiki pages in real time. To bring the edits from Wikipedia to the Kafka cluster I decide to use Python, in which there are multiple libraries available for usage, in this specific case I refere to the library **ksql-python**: a python wrapper for the KSQL REST API. The general set-up to use suche library is the following:
 
 ```python
 from ksql import KSQLAPI
