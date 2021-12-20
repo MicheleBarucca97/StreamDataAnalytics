@@ -311,7 +311,67 @@ Output:
 |bot                              |3010.0                           |2021-11-27 17:34:48+0200         |2021-11-27 17:34:56+0200         |
 ```
 
+
+**Q5-Join**
+
+TEXT
+
+```
+CREATE STREAM Bot_edit_STREAM AS
+SELECT  namespaceType, domain, userType,  oldLength,  newLength
+FROM Wikipedia_stream WHERE userType = 'bot';
+```
+
+TEXT
+
+```
+CREATE STREAM Human_edit_STREAM AS
+SELECT  namespaceType, domain, userType,  oldLength,  newLength
+FROM Wikipedia_stream WHERE userType = 'human';
+```
+
+MAKE JOIN
+
+```
+SELECT *
+FROM Bot_edit_STREAM B JOIN Human_edit_STREAM H WITHIN 1 MINUTES
+ON B.namespaceType = H.namespaceType
+WHERE B.newLength > H.newLength and H.namespaceType != 'main namespace' EMIT CHANGES;
+```
+
+THE OUTPUT
+
+```
++---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+
+|B_NAMESPACETYPE|B_DOMAIN       |B_USERTYPE     |B_OLDLENGTH    |B_NEWLENGTH    |H_NAMESPACETYPE|H_DOMAIN       |H_USERTYPE     |H_OLDLENGTH    |H_NEWLENGTH    |
++---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+
+|File           |commons.wikimed|bot            |4745           |6791           |File           |commons.wikimed|human          |414            |621            |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |4745           |6791           |File           |commons.wikimed|human          |422            |633            |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |4745           |6791           |File           |commons.wikimed|human          |420            |630            |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |4745           |6791           |File           |commons.wikimed|human          |3937           |3986           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |5670           |6188           |File           |commons.wikimed|human          |3807           |3840           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |5177           |7221           |File           |commons.wikimed|human          |3898           |4018           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |2941           |7445           |File           |commons.wikimed|human          |3898           |4018           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |6162           |8645           |File           |commons.wikimed|human          |3898           |4018           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |4745           |6791           |File           |commons.wikimed|human          |3898           |4018           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|File           |commons.wikimed|bot            |2216           |5332           |File           |commons.wikimed|human          |3898           |4018           |
+|               |ia.org         |               |               |               |               |ia.org         |               |               |               |
+|Wikipedia      |pt.wikipedia.or|bot            |112082         |112276         |Wikipedia      |commons.wikimed|human          |16501          |16485          |
+
+```
+
+
 At this point you can play in variuous ways with ksql CLI, querying the stream of edits in all the manner you like more, have fun then.
+
 
 Keep in mind
 ---------
