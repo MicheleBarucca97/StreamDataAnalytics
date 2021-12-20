@@ -312,9 +312,9 @@ Output:
 ```
 
 
-**Q5-Join**
+**Q5-Stream-to-Stream Join**
 
-TEXT
+To make the join I create two streams from a query. The first one is a stream composed by all the edits made by bots:
 
 ```
 CREATE STREAM Bot_edit_STREAM AS
@@ -322,7 +322,7 @@ SELECT  namespaceType, domain, userType,  oldLength,  newLength
 FROM Wikipedia_stream WHERE userType = 'bot';
 ```
 
-TEXT
+The second one contains the edits made by humans:
 
 ```
 CREATE STREAM Human_edit_STREAM AS
@@ -330,7 +330,7 @@ SELECT  namespaceType, domain, userType,  oldLength,  newLength
 FROM Wikipedia_stream WHERE userType = 'human';
 ```
 
-MAKE JOIN
+Then I make the join between the two streams within one minute:
 
 ```
 SELECT *
@@ -339,7 +339,7 @@ ON B.namespaceType = H.namespaceType
 WHERE B.newLength > H.newLength and H.namespaceType != 'main namespace' EMIT CHANGES;
 ```
 
-THE OUTPUT
+The output is something like the following:
 
 ```
 +---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+
