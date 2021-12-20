@@ -1,7 +1,7 @@
 # StreamDataAnalytics
 Introduction
 ============
-The project aims to create a streaming ETL pipeline, that ingests events from Wikipedia, transforms them through a script in python and loads them into destination storage systems, in this case Kafka.
+The project aims to create a streaming ETL pipeline, that ingests events from Wikipedia, transforms them through a script in python and load them into destination storage systems, which in this case is Kafka.
 
 What is Kafka?
 ------------
