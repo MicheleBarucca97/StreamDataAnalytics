@@ -25,7 +25,7 @@ Some of the key features that make Apache Kafka a great product:
 
 Case study 
 =========
-The use case is a Kafka event streaming application for real-time edits from real Wikipedia pages. Wikimedia Foundation has IRC channels that publish edits happening to real wiki pages in real time. To bring the edits from Wikipedia to the Kafka cluster I decide to use Python, in which there are multiple libraries available for usage, in this specific case I refere to the library **ksql-python**: a python wrapper for the KSQL REST API. The general set-up to use suche library is the following:
+The use case is a Kafka event streaming application for real-time edits from real Wikipedia pages. Wikimedia Foundation has IRC channels that publish edits happening to real wiki pages in real time. To bring the edits from Wikipedia to the Kafka cluster I decide to use Python, in which there are multiple libraries available for usage, in this specific case I refere to the library **ksql-python**: a python wrapper for the KSQL REST API. The general set-up to use such library is the following:
 
 ```python
 from ksql import KSQLAPI
@@ -35,7 +35,7 @@ client = KSQLAPI('http://ksql-server:8088')
 To have more information about the ksql-python library I redirect you to [the following link](https://libraries.io/pypi/ksql).
 Then, the demo uses ksqlDB and ksqlDB CLI (Command-line Interface) to develop the SQL queries and statements for your real-time streaming applications. Basically, the ksqlDB CLI connects to a running ksqlDB Server instance to enable inspecting Kafka topics and creating ksqlDB streams and tables. 
 
-The demo is developed in a Docker environment and has all services running on one host. Also notice that the operative system in which the application was built is Ubuntu 20.04. 
+The demo is developed in a Docker environment and it has all services running on one host. Also notice that the operative system in which the application was built is Ubuntu 20.04. 
 
 How to run the demo  
 =========
