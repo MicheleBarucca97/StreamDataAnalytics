@@ -26,7 +26,7 @@ def construct_event(event_data, user_types):
     # define the structure of the json event that will be published to kafka topic
     
     event = [{"domain": event_data['meta']['domain'],
-        "namespaceId": event_data['namespace'],
+        "namespaceType": event_data['namespace'],
         "title": event_data['title'],
         #"comment": event_data['comment'],
         "timestamp": event_data['meta']['dt'],
