@@ -169,7 +169,7 @@ To see if everything worked well, we can do two things:
 
 Data generation through a Python app
 ---------
-The file ```wikipedia_data_streaming.py``` contains the lines of code necessary to parse the data coming from Wikipedia thanks to the URL ```'https://stream.wikimedia.org/v2/stream/recentchange'``` and put those into a JSON file built ad hoc, which will be sent directly to the Kafka cluster.
+The file ```wikipedia.py``` contains the lines of code necessary to parse the data coming from Wikipedia thanks to the URL ```'https://stream.wikimedia.org/v2/stream/recentchange'``` and put those into a JSON file built ad hoc, which will be sent directly to the Kafka cluster.
 Some precautions have been made in the analysis of data coming from Wikipedia: first of all it was created a dictionary for the various known namespaces, the 32 namespaces in the English Wikipedia are numbered for programming purposes. So we construct a function that take into account those namespace:
 ```
 def init_namespaces():
