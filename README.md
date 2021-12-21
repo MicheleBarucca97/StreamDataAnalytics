@@ -205,7 +205,7 @@ Before proceeding with the next step you have to open a different terminal and l
 
 On the terminal you will see the JSON messages that will be published in Kafka.
 
-Play with ksqlCLI
+Play with ksqlDB CLI
 ---------
 
 **Q1 - select the edits with a difference between the new and old length higher then 100**
