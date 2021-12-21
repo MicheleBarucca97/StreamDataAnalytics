@@ -370,7 +370,7 @@ The output is something like the following:
 ```
 
 
-At this point you can play in variuous ways with ksql CLI, querying the stream of edits in all the manner you like more, have fun then.
+At this point you can play in variuous ways with ksqlDB CLI, querying the stream of edits in all the manner you like more, have fun then.
 
 
 Keep in mind
