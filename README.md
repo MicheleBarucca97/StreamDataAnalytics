@@ -375,7 +375,13 @@ At this point you can play in variuous ways with ksqlDB CLI, querying the stream
 
 Keep in mind
 ---------
-It's customary to shut down the docker-containers after you have used those. In order to do this, you have to type in terminal the following two command:
+It's customary to shut down the docker-containers after you have used those. In order to do this, you have to type in the terminal the following command:
+
+```
+docker-compose down
+```
+
+or the following two, but it is safer to use the first cited:
 
 ```
 docker ps -q -a | xargs docker stop
@@ -383,5 +389,3 @@ docker ps -q -a | xargs docker stop
 ```
 docker ps -q -a | xargs docker rm
 ```
-
-docker-compose down
