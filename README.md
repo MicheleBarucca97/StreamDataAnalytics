@@ -11,7 +11,7 @@ In most cases, messages need to have some structure that can easily be interpret
 Messages are categorized into different **topics**, in order to separate them based on some attribute. Topics can also be divided into partitions, which provides extra scalability and performance, as they can be hosted into different servers. You can think of topics as an append-only log, which can only be read from beginning to end. In the SQL world, topics would be our tables.
 
 There are two types of clients; **publishers** and **consumers**. As their names imply, **publishers** send messages to topics and **consumers** read them.
-The Kafka cluster is formed by Kafka node, called **broker**. A Kafka cluster contains at least three brokers. These are responsible for acquiring messages from producers, storing them in disk and responding to requests of consumers. Notice that, Kafka maintains replicas of each partition on other Brokers in the cluster, but one broker is the *leader*, which means that all writes and reads go to and from it, while the other brokers containing replicas of the partitions are *followers.*
+The Kafka cluster is formed by nodes, called **broker**, and it contains at least three brokers. The latter are responsible for acquiring messages from producers, storing them in disk and responding to requests of consumers. Notice that, Kafka maintains replicas of each partition on other brokers in the cluster, but one broker is the *leader*, which means that all writes and reads go to and from it, while the other brokers containing replicas of the partitions and they take the name of *followers.*
 
 ![My Alt Text](https://github.com/MicheleBarucca97/StreamDataAnalytics/blob/main/Images/kafka_architecture.jpg "Kafka Architecture")
 
