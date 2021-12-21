@@ -247,7 +247,7 @@ Output:
 
 **Q3 - logical tumbling window**
 
-The average difference between new and old length of the last 4 seconds every 4 seconds
+The average difference between new and old length of the last 4 seconds every 4 seconds group by the type of user
 ```
 SELECT userType, AVG(newLength-oldLength) AS AVG_DIFF_LEN,
   TIMESTAMPTOSTRING(WINDOWSTART, 'yyy-MM-dd HH:mm:ssZ','UTC+2') as window_start,
